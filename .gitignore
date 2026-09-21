@@ -1,0 +1,27 @@
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 编辑器 / IDE
+.idea/
+.vscode/
+*.swp
+*~
+
+# 本地临时文件
+/tmp/
+*.log
+
+# 注意：references/raw/*.txt 是语料库，必须纳入版本控制，不要忽略。
+# 若你希望本地保留不打算提交的试验语料，请放在 references/raw/_local/ 下：
+references/raw/_local/

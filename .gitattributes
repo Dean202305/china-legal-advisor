@@ -1,0 +1,23 @@
+# 统一换行符，避免跨平台差异
+* text=auto eol=lf
+
+*.py   text eol=lf
+*.sh   text eol=lf
+*.md   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.txt  text eol=lf
+
+# 语料库为 UTF-8 纯文本，diff 时按文本处理
+references/raw/*.txt text
+
+# 图片等二进制（如有）
+*.png binary
+*.jpg binary
+*.pdf binary
+
+# 让 GitHub 不要把语料库计入语言统计（它是数据，不是源码）
+references/raw/*.txt linguist-documentation
+references/CORPUS.md linguist-documentation
+docs/SOURCES.md linguist-documentation
