@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Dean
+Copyright (c) 2026 Dean202305
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,13 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-附注（非许可证条款，仅为说明）：
-
-1. 本仓库 `references/raw/` 目录收录的中华人民共和国法律、行政法规、司法解释等文本，
-   属于具有立法、行政、司法性质的官方文件。依据《中华人民共和国著作权法》第五条，
-   此类文件不适用著作权法，任何人均可自由使用。
-2. 上述官方文本的著作权状态不影响本许可证对**代码与文档**的授权。
-3. 本项目及其输出**不构成法律意见**，详见 DISCLAIMER.md。

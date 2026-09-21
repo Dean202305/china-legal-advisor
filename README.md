@@ -169,6 +169,8 @@ china-legal-advisor/
 │   ├── add_document.py           # 新增法规并自动校验条号
 │   └── selftest.py               # 解析器 + 语料库自检
 ├── docs/SOURCES.md               # 语料来源与著作权说明
+├── NOTICE.md                     # 权利状态与来源声明
+├── DISCLAIMER.md                 # 免责声明（中英双语）
 └── .github/workflows/ci.yml      # CI：自检 + 语料完整性
 ```
 
@@ -215,7 +217,7 @@ A：当前仅覆盖中国大陆法律。语料与技能均为中文，交互也�
 ## 📄 许可证与免责
 
 - 代码与文档：[MIT](LICENSE)
-- 收录的法规文本：依《中华人民共和国著作权法》第五条不适用著作权法（见 [docs/SOURCES.md](docs/SOURCES.md)）
+- 收录的法规文本：依《中华人民共和国著作权法》第五条不适用著作权法（见 [NOTICE.md](NOTICE.md) 与 [docs/SOURCES.md](docs/SOURCES.md)）
 - **重要**：本项目不构成法律意见，使用前请阅读 [DISCLAIMER.md](DISCLAIMER.md)
 
 ---
