@@ -25,3 +25,7 @@ venv/
 # 注意：references/raw/*.txt 是语料库，必须纳入版本控制，不要忽略。
 # 若你希望本地保留不打算提交的试验语料，请放在 references/raw/_local/ 下：
 references/raw/_local/
+
+# 生成物：知识库打包输出（用 scripts/build_kb.py 重新生成，不纳入版本控制）
+dist/
+

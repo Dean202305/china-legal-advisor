@@ -1,0 +1,19 @@
+{
+  "_说明": "MCP 客户端配置示例。把 args 里的路径改成你本机 china-legal-advisor 的绝对路径。",
+  "_适用客户端": [
+    "Claude Desktop（~/Library/Application Support/Claude/claude_desktop_config.json）",
+    "Cursor（.cursor/mcp.json 或设置面板 MCP）",
+    "Cline / Roo Code（MCP Servers 配置）",
+    "Cherry Studio（设置 → MCP 服务器）",
+    "ChatWise / DeepChat 等支持 MCP 的客户端"
+  ],
+  "mcpServers": {
+    "china-legal-advisor": {
+      "command": "python3",
+      "args": [
+        "/绝对路径/china-legal-advisor/scripts/mcp_server.py"
+      ],
+      "env": {}
+    }
+  }
+}

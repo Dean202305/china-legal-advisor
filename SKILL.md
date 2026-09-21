@@ -234,5 +234,25 @@ python3 scripts/add_document.py --title "..." --short "..." --category labor \
 - `references/output-templates.md` —— 三类问题的输出模板与"总结回答"模板
 - `references/currency.md` —— 时效核验、地方标准清单、语料库更新流程
 - `scripts/law.py` —— 条文级检索 CLI
+- `scripts/mcp_server.py` —— MCP 服务器（供 Claude Desktop / Cursor / Cline / Cherry Studio 等调用）
+- `scripts/serve.py` —— HTTP API（供聊天平台函数调用 / 插件接入）
+- `scripts/build_kb.py` —— 生成可上传到聊天 App 知识库的文件包
 - `scripts/add_document.py` —— 扩充语料库
 - `scripts/selftest.py` —— 解析器与语料库自检
+- `prompts/system-prompt-zh.md` —— 可直接粘贴到聊天 App 的系统提示词
+- `docs/INTEGRATIONS.md` —— 接入豆包 / 千问 / DeepSeek 的完整指南
+
+## 十、其他运行环境（被问到时怎么答）
+
+本技能本体运行在支持 Agent Skills 的 coding agent 中。**若用户问"能不能在豆包 /
+通义千问 / DeepSeek 的聊天窗口里用"**，如实说明：这些 App 的聊天窗口无法安装本地技能，
+但仓库提供三条接入路径，按用户场景推荐（详见 `docs/INTEGRATIONS.md`）：
+
+| 用户场景 | 推荐路径 | 起步命令 |
+| --- | --- | --- |
+| 只想在聊天 App 里问答 | **知识库 + 系统提示词**（检索增强，非硬约束） | `python3 scripts/build_kb.py --zip`，再把 `prompts/system-prompt-zh.md` 粘进自定义指令 |
+| 用 Claude Desktop / Cursor / Cline / Cherry Studio 等 | **MCP 服务器**（真调用，无需公网） | `python3 scripts/mcp_server.py` |
+| 接开放平台 API / 扣子插件 / 要给他人用 | **HTTP API + 函数调用**（真调用，需公网） | `python3 scripts/serve.py` |
+
+要点：只有 MCP 与 HTTP API 能让模型**每次都真的取到条文原文**；单纯上传知识库仍可能出现
+引用偏差，务必把这一局限告诉用户。不要夸大能力，也不要因为"装不进豆包"就回答"做不到"。

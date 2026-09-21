@@ -83,6 +83,38 @@ python3 scripts/law.py verify                            # 语料完整性自检
 > `install.sh` 默认用**符号链接**安装，因此 `git pull` 即可让所有 AI 工具同步更新；
 > 若你的工具不支持符号链接，加 `--copy`。
 
+## 📱 接入豆包 / 千问 / DeepSeek 等聊天应用
+
+这些 App 的聊天窗口**不支持安装本地技能**，但有三条接入路径，本仓库三条都实现了：
+
+| 路径 | 适用 | 是否"真调用" | 起步命令 |
+| --- | --- | --- | --- |
+| **① 知识库 + 系统提示词** | 豆包、千问、DeepSeek、Kimi、Coze……几乎所有支持"上传文件 + 自定义指令"的产品 | 否（检索增强） | `python3 scripts/build_kb.py --zip` |
+| **② MCP 服务器** | Claude Desktop、Cursor、Cline、Cherry Studio、ChatWise 等支持 MCP 的客户端 | **是** | `python3 scripts/mcp_server.py` |
+| **③ HTTP API + 函数调用** | DeepSeek 开放平台、通义千问 API、扣子 Coze 插件、豆包智能体 | **是** | `python3 scripts/serve.py` |
+
+```bash
+# ① 生成可直接上传的知识库包（含系统提示词与使用说明）
+python3 scripts/build_kb.py --zip
+#    → dist/knowledge-base/*.md  +  dist/china-legal-advisor-kb.zip
+#    把 prompts/system-prompt-zh.md 粘贴到 App 的「自定义指令/角色设定」，
+#    再把知识库文件上传为该 App 的知识库。
+
+# ② MCP：在客户端配置里指向 mcp_server.py（见 examples/mcp_config.example.json）
+python3 scripts/mcp_server.py --selftest
+
+# ③ HTTP API：供平台函数调用 / 插件接入
+python3 scripts/serve.py --open
+curl http://127.0.0.1:8848/tools/openai.json   # 直接导入 DeepSeek / 通义 / Coze
+python3 examples/deepseek_function_calling.py "公司欠我 6400 元工资，还让我月底走人，我该怎么办？"
+```
+
+**完整的逐步接入说明（含每个平台的入口位置、函数参数、Coze 插件配置、安全注意事项）见
+[`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md)。**
+
+> MCP 与 HTTP API 两种方式下，模型每次都要**真的调用工具取条文原文**，
+> 而不是"凭记忆背法条"——这是本仓库相对于单纯上传文档的核心区别。
+
 ## 💬 使用示例
 
 技能启用后，直接用自然语言提问即可。它会**先查条文、按需反问、最后给总结**：
@@ -166,10 +198,21 @@ china-legal-advisor/
 │   └── currency.md               # 时效核验、地方标准清单、语料更新流程
 ├── scripts/
 │   ├── law.py                    # 条文级检索 CLI（零依赖）
+│   ├── mcp_server.py             # MCP 服务器（stdio JSON-RPC，供 AI 客户端调用）
+│   ├── serve.py                  # HTTP JSON API（供平台函数调用 / 插件接入）
+│   ├── build_kb.py               # 生成"可上传到聊天 App 知识库"的文件包
 │   ├── add_document.py           # 新增法规并自动校验条号
 │   └── selftest.py               # 解析器 + 语料库自检
-├── docs/SOURCES.md               # 语料来源与著作权说明
-├── docs/ci.yml                   # CI 定义（模板，复制到 .github/workflows/ 即启用）
+├── prompts/
+│   ├── system-prompt-zh.md       # 系统提示词（完整版，粘贴到聊天 App）
+│   └── system-prompt-lite.md     # 系统提示词（精简版 / 极简版）
+├── examples/
+│   ├── deepseek_function_calling.py   # Function Calling 可运行示例（DeepSeek/通义通用）
+│   └── mcp_config.example.json        # MCP 客户端配置示例
+├── docs/
+│   ├── SOURCES.md                # 语料来源与著作权说明
+│   ├── INTEGRATIONS.md           # 接入豆包/千问/DeepSeek 的完整指南
+│   └── ci.yml                    # CI 定义（模板，复制到 .github/workflows/ 即启用）
 ├── NOTICE.md                     # 权利状态与来源声明
 ├── DISCLAIMER.md                 # 免责声明（中英双语）
 └── .github/                      # Issue / PR 模板

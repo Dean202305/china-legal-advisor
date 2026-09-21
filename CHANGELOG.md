@@ -3,6 +3,43 @@
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 与
 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.2.0] - 2026-09-21
+
+新增**聊天应用接入能力**：让豆包、通义千问、DeepSeek、Coze 等不支持本地技能的产品
+也能用上本语料库。三条路径全部实现，详见 [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md)。
+
+### 新增 · 接入层（全部零第三方依赖）
+
+- `scripts/mcp_server.py` —— **MCP 服务器**（stdio + 换行分隔 JSON-RPC 2.0），
+  暴露 5 个工具：`search_law`、`get_article`、`list_laws`、`get_playbook`、`corpus_stats`；
+  并通过 `initialize.instructions` 下发"先查后答 / 先问后答 / 附总结回答"的行为约束。
+  适用于 Claude Desktop、Cursor、Cline、Cherry Studio、ChatWise 等 MCP 客户端。
+  支持 `--selftest` 一键自检。
+- `scripts/serve.py` —— **HTTP JSON API**（标准库 `http.server`），提供
+  `/health`、`/stats`、`/laws`、`/search`、`/article`、`/playbook`、
+  `/tools/openai.json`、`/tools/mcp.json` 与 `POST /tool`；
+  自带浏览器测试页、CORS、可选 `--token` 鉴权；默认只监听 `127.0.0.1`。
+  适用于 DeepSeek 开放平台、通义千问 API、扣子 Coze 插件、豆包智能体等函数调用场景。
+- `scripts/build_kb.py` —— **知识库打包器**：把语料库渲染成可直接上传到聊天 App 的
+  markdown 文件包（民法典 / 劳动 / 公司 / 程序法 / 实务指南 / 检索词与输出模板 /
+  全量合集），支持 `--max-chars` 按平台限制切分与 `--zip` 打包。
+- `prompts/system-prompt-zh.md`、`prompts/system-prompt-lite.md` ——
+  可直接粘贴到聊天 App「自定义指令 / 角色设定」的**系统提示词**（完整版 + 精简版 + 极简版），
+  把本技能的四条红线、先问后答协议、总结回答要求完整复刻到任意聊天应用。
+- `examples/deepseek_function_calling.py` —— **可运行的 Function Calling 示例**
+  （仅用 urllib，兼容 DeepSeek / 通义 / Moonshot / 智谱等 OpenAI 兼容接口），
+  自动拉取工具定义、执行工具调用并多轮循环。
+- `examples/mcp_config.example.json` —— MCP 客户端配置示例。
+- `docs/INTEGRATIONS.md` —— 逐步接入指南：三条路径的适用场景对比、各平台入口位置、
+  接口清单、Coze 插件配置、公网部署与安全注意事项。
+
+### 变更
+
+- CI 模板（`docs/ci.yml`）新增 5 个步骤：脚本编译检查（Python 3.8 兼容）、
+  MCP 自检、MCP stdio 协议冒烟测试、HTTP API 冒烟测试、知识库打包测试。
+- `SKILL.md` 增加"被问到如何接入聊天应用"的指引；README 增加接入章节与目录结构更新。
+- `.gitignore` 忽略生成物 `dist/`。
+
 ## [0.1.0] - 2026-09-21
 
 首个公开版本。
@@ -55,4 +92,5 @@
 - 公司法司法解释（一）～（五）截至本版本仍未与 2023 年修订的公司法作衔接修正，
   其正文沿用旧条号，引用时须对照 `references/company-playbook.md` 的对应表。
 
+[0.2.0]: https://github.com/Dean202305/china-legal-advisor/releases/tag/v0.2.0
 [0.1.0]: https://github.com/Dean202305/china-legal-advisor/releases/tag/v0.1.0
