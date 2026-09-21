@@ -112,6 +112,27 @@ python3 examples/deepseek_function_calling.py "公司欠我 6400 元工资，还
 **完整的逐步接入说明（含每个平台的入口位置、函数参数、Coze 插件配置、安全注意事项）见
 [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md)。**
 
+### 📲 手机 App 专用（豆包 / 元宝 / 千问 / Kimi / 智谱清言 / DeepSeek / ChatGPT / Gemini）
+
+手机 App 跑在云端，**只能走"上传知识库 + 粘贴指令"这条路**。为此专门提供手机端包：
+
+```bash
+python3 scripts/build_kb.py --profile mobile --zip
+#  → dist/kb-mobile/
+#     · 01-系统提示词-可复制.txt                （粘贴到「人设/自定义指令」）
+#     · 中国法律条文-核心版-民法典与劳动.docx     246 KB ← 优先上传这个
+#     · 中国法律条文-全量版-33部法规.docx         339 KB
+```
+
+**为什么是 `.docx` 而不是 `.md`**：手机文件选择器常常不显示 `.md`，而 `.txt`/`.docx` 几乎所有 App 都认
+（DOCX 由纯 Python 标准库生成，Word / WPS / Pages 都能打开）。
+
+也可以直接从 [Releases](https://github.com/Dean202305/china-legal-advisor/releases)
+下载打包好的 `china-legal-advisor-kb-mobile.zip`。
+
+**各 App 的逐步操作卡片、把文件传到手机的方法、上传后的三步验证、局限说明 →
+[`docs/PLATFORM-GUIDE.md`](docs/PLATFORM-GUIDE.md)。**
+
 > MCP 与 HTTP API 两种方式下，模型每次都要**真的调用工具取条文原文**，
 > 而不是"凭记忆背法条"——这是本仓库相对于单纯上传文档的核心区别。
 
@@ -212,6 +233,7 @@ china-legal-advisor/
 ├── docs/
 │   ├── SOURCES.md                # 语料来源与著作权说明
 │   ├── INTEGRATIONS.md           # 接入豆包/千问/DeepSeek 的完整指南
+│   ├── PLATFORM-GUIDE.md         # 手机 App 逐步操作卡片（同时打进手机端知识库包）
 │   └── ci.yml                    # CI 定义（模板，复制到 .github/workflows/ 即启用）
 ├── NOTICE.md                     # 权利状态与来源声明
 ├── DISCLAIMER.md                 # 免责声明（中英双语）

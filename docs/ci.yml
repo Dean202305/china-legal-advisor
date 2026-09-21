@@ -95,10 +95,22 @@ jobs:
       - name: 知识库打包冒烟测试
         run: |
           set -e
-          python3 scripts/build_kb.py --out /tmp/kb --zip
+          python3 scripts/build_kb.py --profile all --out /tmp/kb --zip
           test -f /tmp/kb/00-使用说明.md
           test -f /tmp/kb/01-民法典.md
-          test -f /tmp/china-legal-advisor-kb.zip
+          test -f /tmp/kb/mobile/01-系统提示词-可复制.txt
+          test -f "/tmp/kb/mobile/中国法律条文-核心版-民法典与劳动.docx"
+          test -f "/tmp/kb/mobile/中国法律条文-全量版-33部法规.docx"
+          test -f /tmp/kb/china-legal-advisor-kb-mobile.zip
+          # DOCX 必须是合法 zip 且含中文条文
+          python3 -c "
+          import zipfile
+          f = '/tmp/kb/mobile/中国法律条文-核心版-民法典与劳动.docx'
+          with zipfile.ZipFile(f) as z:
+              assert 'word/document.xml' in z.namelist(), 'docx 结构不对'
+              assert '第三十八条' in z.read('word/document.xml').decode('utf-8'), 'docx 内容缺失'
+          print('DOCX 校验通过')
+          "
           echo "知识库打包通过"
 
       - name: 语料元数据完整性（每部法规须有 title/version/source/fetched）

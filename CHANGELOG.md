@@ -3,6 +3,35 @@
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 与
 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.3.0] - 2026-09-21
+
+面向**手机 App**（豆包 / 腾讯元宝 / 通义千问 / Kimi / 智谱清言 / DeepSeek / ChatGPT / Gemini）
+优化接入体验。手机 App 运行在云端、无法调用本地程序，唯一可行路径是"上传知识库 + 粘贴指令"，
+本版本把这条路径压缩到 2 分钟。
+
+### 新增
+
+- `scripts/build_kb.py` 支持 `--profile mobile`：生成**手机端单文件包**，含
+  - `中国法律条文-核心版-民法典与劳动.docx`（≈246 KB，覆盖多数常见问题）
+  - `中国法律条文-全量版-33部法规.docx`（≈339 KB）
+  - 同时提供 `.txt` 版本（平台不认 docx 时的备选）
+  - `01-系统提示词-可复制.txt`（直接粘贴到「人设 / 自定义指令」）
+  - `00-先看这个-接入说明.md`（逐步操作卡片）
+- **DOCX 生成能力（纯 Python 标准库）**：`.docx` 本质是 zip + XML，
+  由 `zipfile` + 手写 OOXML 直接生成，**不引入 python-docx 等任何第三方依赖**；
+  经 XML 解析与 `file` 校验，Word / WPS / Pages / Google Docs 均可打开。
+  之所以需要它：**手机文件选择器常常不显示 `.md` 文件**，而 `.txt`/`.docx` 几乎所有 App 都认。
+- `docs/PLATFORM-GUIDE.md` —— 8 个 App 的逐步操作卡片、把文件传到手机的 4 种方法、
+  上传后的三步验证、局限说明。该文件同时被打包进手机端知识库包，**文档只有一份**
+  （`build_kb.py` 直接读取它，不重复维护）。
+- `build_kb.py` 新增 `--profile all` 与 `--format md,txt,docx`。
+
+### 变更
+
+- README 新增「📲 手机 App 专用」小节；目录结构补充 `docs/PLATFORM-GUIDE.md`。
+- CI 的"知识库打包"步骤改为同时校验 desktop 与 mobile 两种形态的产物。
+- 发布产物：Release 资产新增 `china-legal-advisor-kb-mobile.zip`（≈1.08 MB）。
+
 ## [0.2.0] - 2026-09-21
 
 新增**聊天应用接入能力**：让豆包、通义千问、DeepSeek、Coze 等不支持本地技能的产品
@@ -92,5 +121,6 @@
 - 公司法司法解释（一）～（五）截至本版本仍未与 2023 年修订的公司法作衔接修正，
   其正文沿用旧条号，引用时须对照 `references/company-playbook.md` 的对应表。
 
+[0.3.0]: https://github.com/Dean202305/china-legal-advisor/releases/tag/v0.3.0
 [0.2.0]: https://github.com/Dean202305/china-legal-advisor/releases/tag/v0.2.0
 [0.1.0]: https://github.com/Dean202305/china-legal-advisor/releases/tag/v0.1.0
