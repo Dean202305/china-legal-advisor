@@ -45,7 +45,8 @@
 - `AGENTS.md` / `CLAUDE.md` / `.cursor/rules/` —— 跨 AI 工具的接入文件。
 - `install.sh` —— 一键安装到 Claude Code / Codex / DSH / Cursor 等工具。
 - `DISCLAIMER.md` —— 中英双语免责声明。
-- `.github/workflows/ci.yml` —— CI 校验语料完整性、自检与命令冒烟测试。
+- `docs/ci.yml` —— CI 定义（语料完整性、自检、命令冒烟测试、元数据校验）；
+  以模板形式分发，复制到 `.github/workflows/ci.yml` 即启用。
 
 ### 已知限制
 

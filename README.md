@@ -169,9 +169,10 @@ china-legal-advisor/
 │   ├── add_document.py           # 新增法规并自动校验条号
 │   └── selftest.py               # 解析器 + 语料库自检
 ├── docs/SOURCES.md               # 语料来源与著作权说明
+├── docs/ci.yml                   # CI 定义（模板，复制到 .github/workflows/ 即启用）
 ├── NOTICE.md                     # 权利状态与来源声明
 ├── DISCLAIMER.md                 # 免责声明（中英双语）
-└── .github/workflows/ci.yml      # CI：自检 + 语料完整性
+└── .github/                      # Issue / PR 模板
 ```
 
 ## 🔄 更新语料库

@@ -1,0 +1,72 @@
+# CI 工作流定义（可选启用）
+#
+# 由于 GitHub 要求推送 .github/workflows/ 下的文件必须持有 'workflow' 权限，
+# 本文件以模板形式随仓库分发。启用方式（二选一）：
+#   本地：mkdir -p .github/workflows && cp docs/ci.yml .github/workflows/ci.yml && git add -A && git commit -m 'ci: 启用 CI' && git push
+#   网页：在 GitHub 仓库页 New file，路径填 .github/workflows/ci.yml，内容复制本文件
+# 提示：若 gh 的 token 缺少 workflow 权限，先执行 gh auth refresh -h github.com -s workflow
+
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.8", "3.10", "3.11", "3.12" ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 语料库完整性校验（条号连续、与头部声明一致）
+        run: python3 scripts/law.py verify
+
+      - name: 解析器 + 语料库自检
+        run: python3 scripts/selftest.py
+
+      - name: 语料库统计
+        run: python3 scripts/law.py stats
+
+      - name: 检索工具冒烟测试
+        run: |
+          set -e
+          python3 scripts/law.py list > /dev/null
+          python3 scripts/law.py article 劳动合同法 38 > /dev/null
+          python3 scripts/law.py article 民法典 第五百七十七条 -A 2 -B 1 > /dev/null
+          python3 scripts/law.py search 竞业限制 违约金 -n 3 > /dev/null
+          python3 scripts/law.py search 第五百八十八条 > /dev/null
+          python3 scripts/law.py search "严重违反" --or 辞退 解除 -n 3 > /dev/null
+          python3 scripts/law.py search --regex "提前(三十日|三日)" > /dev/null
+          python3 scripts/law.py search 违约金 --json > /dev/null
+          echo "全部命令通过"
+
+      - name: 语料元数据完整性（每部法规须有 title/version/source/fetched）
+        run: |
+          python3 - <<'PY'
+          import sys, importlib.util
+          from pathlib import Path
+          spec = importlib.util.spec_from_file_location("law", "scripts/law.py")
+          law = importlib.util.module_from_spec(spec); sys.modules["law"] = law
+          spec.loader.exec_module(law)
+          missing = []
+          for d in law.load_corpus():
+              for k in ("title", "short", "category", "version", "source", "fetched"):
+                  if not d.header.get(k):
+                      missing.append(f"{d.slug}: 缺少 {k}")
+          if missing:
+              print("\n".join(missing)); sys.exit(1)
+          print(f"元数据完整：{len(law.load_corpus())} 个文件")
+          PY
